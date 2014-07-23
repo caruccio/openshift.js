@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+body {
+	padding-top: 60px;
+	padding-bottom: 40px;
+}
+</style>
+
+<link href="css/jquery-ui.min.css" rel="stylesheet">
+<link href="css/jquery-ui.theme.min.css" rel="stylesheet">
+<link href="css/jquery-ui.structure.min.css" rel="stylesheet">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/bootstrap-theme.min.css" rel="stylesheet">
+<link href="css/bootstrap-dialog.css" rel="stylesheet">
+
+<script>
+//why is it here? because rendering code should be close to templates.
+var render_template = function(template_selector, container_id, context)
+{
+	console.log('render_template', template_selector, container_id, context);
+
+	if (typeof container_id === 'object') {
+		context = container_id;
+		container_id = undefined;
+	}
+
+	var source = $(template_selector).html();
+	var template = Handlebars.compile(source);
+	var html = template(context);
+	if (container_id) {
+		$(container_id).html(html);
+	}
+	return html;
+};
+</script>
+</head>
+
+<body>
+
+<!-- Login dialog -->
+<script id="loginTpl" type="text/x-handlebars-template">
+<form>
+	<fieldset>
+		<input type="email" name="username-input" id="username-input" value="{{username}}" placeholder="email" class="text ui-widget-content ui-corner-all">
+		<input type="password" name="password-input" id="password-input" value="" placeholder="password" class="text ui-widget-content ui-corner-all">
+	</fieldset>
+	<div id="error-message" class="error-message"><br></div>
+</form>
+</script>
+
+<!-- Applications -->
+<script id="applicationsTpl" type="text/x-handlebars-template">
+{{#each apps}}
+	<div class="row-fluid summary">
+		<div class="col-md-2" class="app-name" id="app-{{name}}">{{name}}</div>
+		<div class="col-md-4" class="app-url"><a href="{{app_url}}">{{app_url}}</a></div>
+		<div class="col-md-2" class="app-framework">{{framework}}</div>
+		<div class="col-md-2">
+			{{#if scalable}}Scalable{{else}}Non-scalable{{/if}}
+		</div>
+		<div class="col-md-2" id="app-gears">{{gear_count}} {{gear_profile}} gear(s)</div>
+	</div>
+{{else}}
+	<h2>No applications found</h2>
+{{/each}}
+</script>
+
+<div class="container" id="main">
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">GetupCloud OpenShift Console</a>
+			</div>
+
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li><a href="#">Home</a></li>
+					<li><a href="#">About</a></li>
+					<li><a href="#">Support</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<form class="navbar-form navbar-left" role="search">
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Search">
+						</div>
+					</form>
+					<li><a href="#" id="logoutLink">Logout</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid" id="content">
+		<div id="message">Hold on...</div>
+	</div>
+
+	<div id="footer" class="container">
+		<div class="navbar navbar-default navbar-fixed-bottom">
+			<div class="navbar-inner navbar-right">
+				Copyright <a href="http://getupcloud.com">Getup Cloud</a> 2014
+			</div>
+		</div>
+	</div>
+</div>
+
+</body>
+
+<script src="js/jquery.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/jquery.Storage.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap-dialog.js"></script>
+<script src="js/handlebars.min.js"></script>
+<script src="js/openshift.js"></script>
+<script src="js/console.js"></script>
+
+</html>
