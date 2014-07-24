@@ -26,6 +26,7 @@ BootstrapDialog.prototype.refresh = function(message)
 var authenticate = function(link, submit_login, reset_password)
 {
 	console.log('BootstrapDialog.authenticate');
+	logout(link.openshift);
 
 	var $form = $(render_template('#loginTpl', {username: $('#username-input').val() || ''}));
 	var dialog = new BootstrapDialog({
@@ -112,6 +113,12 @@ var home = function(openshift) {
 	});
 };
 
+var logout = function(openshift) {
+	console.log('home:', openshift);
+	openshift.set_auth_token(null);
+	$.Storage.deleteItem('auth_token');
+}
+
 $(document).ready(function()
 {
 	var login_dialog = null;
@@ -125,15 +132,14 @@ $(document).ready(function()
 				login_dialog = authenticate(link);
 			} else {
 				//TODO: proper error message
-				login_dialog.refresh('Auth error');
+				login_dialog.refresh(data.responseText);
 			}
 		},
 		ready: home
 	});
 
 	$('#logoutLink').click(function() {
-		os.set_auth_token(null);
-		$.Storage.deleteItem('auth_token');
+		logout();
 		window.location.reload();
 	});
 });
