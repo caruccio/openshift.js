@@ -46,5 +46,7 @@ You cand disable CORS on [Chrome](http://stackoverflow.com/questions/3102819/dis
 
 > PS: I do not recomend using Internet Explorer because, you know, it's not a real browser. Please don't use it...
 
-Now, execute `./run` and point your browser to [http://127.0.0.1:9090?broker=&lt;your-broker-hostname&gt;](#). It should open a login dialog and list all you apps once you authenticate. The example console uses localStorage from your browser to store a authentication token, use on all requests issued against your broker. That means your username and password are used only during auth/tokenization stages.
+### Ready to go
+
+Now, execute `./run` and point your browser to [http://127.0.0.1:9090?broker=https://broker.yourdomain.com/broker/rest](#). It should open a login dialog and list all your apps once you authenticate. The example console uses localStorage from your browser to store a authentication token, use on all requests issued against your broker. That means your username and password are used only during auth/tokenization stages.
 
