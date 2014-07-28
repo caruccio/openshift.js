@@ -4,7 +4,7 @@ querystring = function()
 		? document.location.search.substr(1).split('&')
 			.map(function(v){ return v.split('=') })
 			.reduce(function(prev, curr) { prev[curr[0]] = curr[1]; return prev; }, {})
-		: undefined;
+		: {};
 };
 
 message = function(levels)
