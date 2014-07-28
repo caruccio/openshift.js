@@ -7,6 +7,16 @@ querystring = function()
 		: undefined;
 };
 
+message = function(levels)
+{
+	for (var level in levels) {
+		var el = $('#' + level + '-message');
+		if (el.length) {
+			el.html(levels[level]);
+		}
+	}
+}
+
 BootstrapDialog.prototype.refresh = function(message)
 {
 	console.log('BootstrapDialog.refresh');
@@ -107,6 +117,7 @@ var home = function(openshift) {
 	var render_home = function(openshfit) {
 		if (openshift.domains && openshift.applications) {
 			var apps = openshift.applications.data.data;
+			message({info: '', error: ''});
 			render_template('#homeTpl', '#content', {apps: apps});
 		}
 	}
