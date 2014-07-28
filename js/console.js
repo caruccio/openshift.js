@@ -104,12 +104,18 @@ var authenticate = function(link, submit_login, reset_password)
 var home = function(openshift) {
 	console.log('home:', openshift);
 
-	var render_applications = function(openshfit) {
-		var apps = openshift.applications.data.data;
-		render_template('#applicationsTpl', '#content', {apps: apps});
+	var render_home = function(openshfit) {
+		if (openshift.domains && openshift.applications) {
+			var apps = openshift.applications.data.data;
+			render_template('#homeTpl', '#content', {apps: apps});
+		}
 	}
+
 	openshift.list_applications({
-		success: render_applications
+		success: render_home
+	});
+	openshift.list_domains({
+		success: render_home
 	});
 };
 
