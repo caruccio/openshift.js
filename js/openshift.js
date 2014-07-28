@@ -106,8 +106,8 @@ OpenShift = function(options) {
 
 	// standard endpoints
 	this.api            = null;
-	this.authorizations = {};
-	this.applications   = {};
+	this.authorizations = null;
+	this.applications   = null;
 
 	$.getJSON(this.url('api'))
 		.success(function(data, status, xhr) {
@@ -187,6 +187,20 @@ OpenShift.prototype.list_applications = function(options)
 	}.bind(this);
 
 	this.api.links.LIST_APPLICATIONS.call(success, options);
+};
+
+OpenShift.prototype.list_domains = function(options)
+{
+	console.log("list_domains", options);
+
+	var success = function(link, data, status, xhr) {
+		this.domains = new Endpoint(link.openshift, data);
+		if (options && typeof options.success === 'function') {
+			options.success(link, data, status, xhr);
+		}
+	}.bind(this);
+
+	this.api.links.LIST_DOMAINS.call(success, options);
 };
 
 })(jQuery);
