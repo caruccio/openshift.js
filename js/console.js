@@ -111,8 +111,113 @@ var authenticate = function(link, submit_login, reset_password)
 	return dialog;
 };
 
-var home = function(openshift) {
-	console.log('home:', openshift);
+var catalog = null;
+
+Catalog = function(openshift)
+{
+	this.openshift = openshift;
+	this.groups = {
+		web:  [],
+		addon:[]
+	};
+	this.searches = {
+		web:   { type: 'standalone', tags: [ 'web_framework' ] },
+		addon: { type: 'embedded' }
+	};
+	this.languages = [ 'php', 'nodejs', 'python', 'ruby', 'perl' ];
+
+	this.update();
+};
+
+Catalog.prototype.update = function(success) {
+	this.openshift.list_cartridges({
+		success: function(link) {
+			catalog = this; //new Catalog(link.openshift);
+
+			//build groups
+			catalog.groups.web = catalog.group_by_tag(this.languages, catalog.search(this.searches.web));
+			//catalog.groups.addon = catalog.group_by_tag(this.languages), catalog.search(this.searches.web));
+
+			console.log('catalog updated:', catalog);
+			if (typeof success === 'function') {
+				success(catalog);
+			}
+		}.bind(this)
+	});
+};
+
+Catalog.prototype.search = function(query)
+{
+	var query = query || {};
+
+	if ($.isEmptyObject(query)) {
+		return this.carts.data.data;
+	}
+
+	var carts = this.openshift.cartridges.data.data.filter(function(el, i) {
+		var target = 0;
+		var hit = 0;
+
+		if (query.obsoletes === true || el.obsolete === true) {
+			return;
+		}
+
+		if (query.type) {
+			target++;
+			if (query.type == el.type) {
+				hit++;
+			}
+		}
+
+		//must match all tags
+		if (query.tags) {
+			var qtags = typeof query.tags === 'string' ? $([query.tags]) : $(query.tags);
+			target += qtags.length;
+			qtags.each(function(i, tag) {
+				if (el.tags.indexOf(tag) !== -1) {
+					hit++;
+				}
+			});
+		}
+
+		if (hit === target) {
+			console.log('+ cart:', el.name, el.type, el.tags);
+			return el;
+		}
+	});
+
+	return carts;
+};
+
+Catalog.prototype.group_by_tag = function(tags, carts)
+{
+	var groups = { };
+	var other  = [];
+	for (var i = 0, tag; tag = tags[i]; i++) {
+		groups[tag] = [];
+	}
+
+	var _carts = carts || this.openshift.cartridges.data.data;
+	var tags = typeof tags === 'string' ? $([tags]) : $(tags);
+	for (var i = 0, cart; cart = _carts[i]; i++) {
+		var hit = false;
+		tags.each(function(i, tag) {
+			if (cart.tags.indexOf(tag) !== -1) {
+				groups[tag].push(cart);
+				hit = true;
+			}
+		});
+		if (!hit) {
+			other.push(cart);
+		}
+	}
+
+	groups.other = other;
+	return groups;
+}
+
+var home = function(openshift, from_cache) {
+	console.log('home:', openshift, from_cache ? 'cached' : '');
 
 	var render_home = function(openshfit) {
 		if (openshift.domains && openshift.applications) {
@@ -122,11 +227,36 @@ var home = function(openshift) {
 		}
 	}
 
+	if (from_cache && openshift.applications) {
+		render_home(openshift);
+		return;
+	}
+
 	openshift.list_applications({
 		success: render_home
 	});
 	openshift.list_domains({
 		success: render_home
+	});
+};
+
+var create_app = function(openshift, from_cache) {
+	console.log('create_app:', openshift, from_cache ? 'cached' : '');
+
+	var render_create_app = function(openshfit) {
+		if (openshift.cartridges) {
+			message({info: '', error: ''});
+			render_template('#create-app-tpl', '#content', {groups: catalog.groups.web});
+		}
+	}
+
+	if (from_cache && openshift.cartridges) {
+		render_create_app(openshift);
+		return;
+	}
+
+	catalog.update(function(catalog) {
+		render_create_app(catalog.openshift);
 	});
 };
 
@@ -152,11 +282,18 @@ $(document).ready(function()
 				login_dialog.refresh(data.responseText);
 			}
 		},
-		ready: home
+		ready: function(openshift) {
+			home(openshift);
+			this.catalog = new Catalog(openshift);
+		}
+	});
 
 	$('#apps-button').click(function() {
 		home(os, true);
 	});
+
+	$('#create-app-button').click(function() {
+		create_app(os, true);
 	});
 
 	$('#logout-button').click(function() {

@@ -67,6 +67,27 @@ var render_template = function(template_selector, container_id, context)
 {{/each}}
 </script>
 
+<!-- Create App -->
+<script id="create-app-tpl" type="text/x-handlebars-template">
+{{#each groups}}
+	<div class="row-fluid cart-group">
+		<div class="col-md-12 cart-type">
+			<h3>{{@key}}</h3>
+		</div>
+		{{#each this}}
+			<div class="row-fluid cart">
+				<div class="col-md-2 cart-name" id="cart-{{name}}">{{display_name}}</div>
+				<div class="row-fluid cart">
+					<div class="col-md-12 cart-tags">{{tags}}</div>
+				</div>
+			</div>
+		{{/each}}
+	</div>
+{{else}}
+	<h2>No cartridges available</h2>
+{{/each}}
+</script>
+
 <div class="container" id="main">
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
