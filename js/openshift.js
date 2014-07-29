@@ -203,4 +203,18 @@ OpenShift.prototype.list_domains = function(options)
 	this.api.links.LIST_DOMAINS.call(success, options);
 };
 
+OpenShift.prototype.list_cartridges = function(options)
+{
+	console.log("list_cartridges", options);
+
+	var success = function(link, data, status, xhr) {
+		this.cartridges = new Endpoint(link.openshift, data);
+		if (options && typeof options.success === 'function') {
+			options.success(link, data, status, xhr);
+		}
+	}.bind(this);
+
+	this.api.links.LIST_CARTRIDGES.call(success, options);
+};
+
 })(jQuery);
