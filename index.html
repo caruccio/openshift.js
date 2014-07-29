@@ -53,8 +53,8 @@ var render_template = function(template_selector, container_id, context)
 <!-- Home -->
 <script id="home-tpl" type="text/x-handlebars-template">
 {{#each apps}}
-	<div class="row-fluid summary">
-		<div class="col-md-2" class="app-name" id="app-{{name}}">{{name}}</div>
+	<div class="row-fluid application">
+		<div class="col-md-2" class="app-name" id="app-{{name}}-{{domain_id}}">{{name}}-{{domain_id}}</div>
 		<div class="col-md-4" class="app-url"><a href="{{app_url}}">{{app_url}}</a></div>
 		<div class="col-md-2" class="app-framework">{{framework}}</div>
 		<div class="col-md-2">
