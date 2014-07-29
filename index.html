@@ -40,7 +40,7 @@ var render_template = function(template_selector, container_id, context)
 <body>
 
 <!-- Login dialog -->
-<script id="loginTpl" type="text/x-handlebars-template">
+<script id="login-tpl" type="text/x-handlebars-template">
 <form>
 	<fieldset>
 		<input type="email" name="username-input" id="username-input" value="{{username}}" placeholder="email" class="text ui-widget-content ui-corner-all">
@@ -51,7 +51,7 @@ var render_template = function(template_selector, container_id, context)
 </script>
 
 <!-- Home -->
-<script id="homeTpl" type="text/x-handlebars-template">
+<script id="home-tpl" type="text/x-handlebars-template">
 {{#each apps}}
 	<div class="row-fluid summary">
 		<div class="col-md-2" class="app-name" id="app-{{name}}">{{name}}</div>
@@ -81,9 +81,8 @@ var render_template = function(template_selector, container_id, context)
 
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li><a href="#">Home</a></li>
-					<li><a href="#">About</a></li>
-					<li><a href="#">Support</a></li>
+					<li><a href="javascript:;" id="apps-button">My Apps</a></li>
+					<li><a href="javascript:;" id="create-app-button">Create App</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<form class="navbar-form navbar-left" role="search">
@@ -91,7 +90,7 @@ var render_template = function(template_selector, container_id, context)
 							<input type="text" class="form-control" placeholder="Search">
 						</div>
 					</form>
-					<li><a href="#" id="logoutLink">Logout</a></li>
+					<li><a href="#" id="logout-button">Logout</a></li>
 				</ul>
 			</div>
 		</div>

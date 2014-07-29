@@ -38,7 +38,7 @@ var authenticate = function(link, submit_login, reset_password)
 	console.log('BootstrapDialog.authenticate');
 	logout(link.openshift);
 
-	var $form = $(render_template('#loginTpl', {username: $('#username-input').val() || ''}));
+	var $form = $(render_template('#login-tpl', {username: $('#username-input').val() || ''}));
 	var dialog = new BootstrapDialog({
 		title:           'Login',
 		message:         $form,
@@ -118,7 +118,7 @@ var home = function(openshift) {
 		if (openshift.domains && openshift.applications) {
 			var apps = openshift.applications.data.data;
 			message({info: '', error: ''});
-			render_template('#homeTpl', '#content', {apps: apps});
+			render_template('#home-tpl', '#content', {apps: apps});
 		}
 	}
 
@@ -153,10 +153,14 @@ $(document).ready(function()
 			}
 		},
 		ready: home
+
+	$('#apps-button').click(function() {
+		home(os, true);
+	});
 	});
 
-	$('#logoutLink').click(function() {
-		logout();
+	$('#logout-button').click(function() {
+		logout(os);
 		window.location.reload();
 	});
 });
