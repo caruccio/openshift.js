@@ -261,7 +261,7 @@ var create_app = function(openshift, from_cache) {
 };
 
 var logout = function(openshift) {
-	console.log('home:', openshift);
+	console.log('logout:', openshift);
 	openshift.set_auth_token(null);
 	$.Storage.deleteItem('auth_token');
 }
