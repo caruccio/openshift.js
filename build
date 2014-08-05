@@ -1,0 +1,49 @@
+#!/bin/bash
+
+read -p 'Type your broker url[broker.getupcloud.com]: ' broker
+if [ ! ${broker} ];then
+   broker=${1:-broker.getupcloud.com}
+fi
+read -p 'Type your username: ' username
+read -s -p 'Type your password: ' password
+echo
+echo
+
+function method()
+{
+   echo "$*"
+   mkdir -p broker/rest/${2%.*}
+   curl -s -X $1 --user $username:$password -k "https://$broker/broker/rest/$2" $4 \
+      | python -mjson.tool \
+      | sed -e "s,https://$broker/,http://127.0.0.1:9090/,g" \
+      > "broker/rest/$2$3"
+}
+
+function get()
+{
+   method GET $1 .${FUNCNAME[0]}
+}
+
+function post()
+{
+   method POST $1 .${FUNCNAME[0]} "--data $2"
+}
+
+function delete()
+{
+   method DELETE $1 .${FUNCNAME[0]}
+}
+
+rm -rf broker/rest
+
+get api.json
+
+DOMAIN=console$$
+post   domains "name=$DOMAIN"
+get    domains
+delete "domains/$DOMAIN"
+
+get applications
+get cartridges
+get quickstarts
+get user

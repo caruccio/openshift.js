@@ -21,7 +21,22 @@ The lib must cope with following requirements:
 * Data centric - all data returned from broker must be easily reached from user callback functions.
 * REST API driven interface - module's methods must mimic the original OpenShift's RESTful API.
 
-## Running
+## Local development
+
+For testing and development purpose, you can use a pre-built bundle of API requests/responses.
+The script `build` will make a serie of requests against your openshift broker, saving all responses inside
+dir `broker/rest`. Those files can then be server by the local HTTP python server.
+
+```
+./build
+./run
+```
+
+Now go to 127.0.0.1:1111
+
+Please note you are now using a mock openshift broker, thus authentication and some POST/PUT/DELETE operations may now work as expected.
+
+## Running from a differente domain
 
 In order to use it from a differente domain than your broker's actual address, you must allow CORS to be acessible from your local origin URL. Supose you downloaded this repo and started it with `./run`. When you access http://127.0.0.1:9090, your browser refuses to fire any request to a different host:port combination than 127.0.0.1:9090. This is because a protection mechanism called [CORS](http://en.wikipedia.org/wiki/Cross-origin_resource_sharing) that prevents a series of malicious websites to steal data from your browser.
 
