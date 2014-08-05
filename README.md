@@ -32,7 +32,7 @@ dir `broker/rest`. Those files can then be server by the local HTTP python serve
 ./run
 ```
 
-Now go to 127.0.0.1:1111
+Now go to 127.0.0.1:9090
 
 Please note you are now using a mock openshift broker, thus authentication and some POST/PUT/DELETE operations may now work as expected.
 
